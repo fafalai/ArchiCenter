@@ -1,0 +1,149 @@
+/*Upload image and Upload pdf button*/
+
+#upload-button,
+#uploadImg_Btn,
+#CP_uploadImg_Btn,
+#HOW_uploadImg_Btn {
+    width: 150px;
+    /*    display: block;*/
+    margin: 10px auto;
+}
+
+/*Upload image and Upload pdf input file button*/
+
+/*
+#file-to-upload,
+#Imgs_Upload {
+    display: none;
+}
+*/
+
+/*Img & PDF main container*/
+
+#pdf-main-container,
+#Img-main-container {
+    /*    width: 400px;*/
+    margin: 10px auto;
+}
+
+/*Img & PDF loader message*/
+
+#pdf-loader,
+#Img-loader {
+    display: none;
+    text-align: center;
+    color: #999999;
+    font-size: 13px;
+    line-height: 100px;
+    height: 100px;
+}
+
+/*
+#HA_PdfContents {
+    display: none;
+}
+*/
+
+/*
+#HA_ImgsContents {
+    display: none;
+}
+*/
+
+#HA_PdfContents canvas {
+    /*
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+*/
+    display: none;
+}
+
+#HA_PdfContents button {
+    margin: 5px 0px 0px 0px;
+    width: 100%;
+    /*    display: none;*/
+}
+
+#HA_ImgsContents button,
+#CPImagesTable button,
+#HOWImagesTable button {
+    margin: 5px 0px 0px 0px;
+    width: 100%;
+}
+
+#HA_PdfContents input {
+    width: 100%;
+    margin: 5px 0px 0px 0px;
+}
+
+#HA_ImgsContents input,
+#CPImagesTable input,
+#HOWImagesTable input {
+    width: 100%;
+    margin: 5px 0px 0px 0px;
+}
+
+#CPImagesTable label,
+#HOWImagesTable label {
+    margin: 0;
+}
+
+#HA_PdfContents img {
+    display: none;
+    /*    width: 595px;*/
+    /*    height: 842px;*/
+}
+
+#HA_ImgsContents img {
+    /*    padding: 5px;*/
+    /*    width: 480px;*/
+    /*    height: 360px;*/
+}
+
+#HA_PdfContents div {
+    float: left;
+    display: inline;
+    margin-left: 10px;
+}
+
+#HA_ImgsContents div,
+#CPImagesTable div,
+#HOWImagesTable div {
+    float: left;
+    display: inline;
+    margin-left: 20px;
+    text-align: center;
+    width: 500px;
+    margin-top:30px;
+    /* height: 500px; */
+}
+
+/* #CPImagesTable div
+{
+    float: left;
+    display: inline;
+    margin-left: 20px;
+    text-align: center;
+    width: 500px;
+    height: 500px;
+} */
+
+/*
+#img_table td,
+#photo_table td {
+    text-align: center;
+    border: inherit;
+}
+*/
+
+/*Img & PDF loader message*/
+
+#page-loader,
+#Imgpage-loader {
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+    display: none;
+    color: #999999;
+    font-size: 13px;
+}

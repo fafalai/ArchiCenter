@@ -1,0 +1,390 @@
+<?php
+  require_once("shared.php");
+
+  global $gConfig;
+
+  $rc = -1;
+  $msg = "";
+  $bookingid = 0;
+
+  try
+  {
+    if (isset($_POST['reportid']) && isset($_POST['uuid']))
+    {
+      $uuid = $_POST['uuid'];
+
+      $custfirstname = $_POST['custfirstname'];
+      $custlastname = $_POST['custlastname'];
+      $custemail = $_POST['custemail'];
+      $custmobile = $_POST['custmobile'];
+      $custphone = $_POST['custphone'];
+      $custaddress1 = $_POST['custaddress1'];
+      $custaddress2 = $_POST['custaddress2'];
+      $custcity = $_POST['custcity'];
+      $custpostcode = $_POST['custpostcode'];
+      $custstate = $_POST['custstate'];
+      
+      $hasbudget = false;
+      $hascommission = false;
+      $hastravel = false;
+      $hasspotter = false;
+      $hascancellation = false;
+
+      $budget = null;
+      $commission = null;
+      $travel = null;
+      $spotter = null;
+      $cancellationfee = null;
+
+
+      //$msg = "[$custemail]";
+
+      if (isset($_POST['budget']))
+      {
+        $budget = $_POST['budget'];
+        $hasbudget = true;
+      }
+      if (isset($_POST['commission']))
+      {
+        $commission = $_POST['commission'];
+        $hascommission = true;
+      }
+      if (isset($_POST['travel']))
+      {
+        $travel = $_POST['travel'];
+        $hastravel = true;
+      }
+      if (isset($_POST['spotter']))
+      {
+        $spotter = $_POST['spotter'];
+        $hasspotter = true;
+      }
+      if (isset($_POST['cancellationfee']))
+      {
+        $cancellationfee = $_POST['cancellationfee'];
+        $hascancellation = true;
+      }
+
+      $reportid = $_POST['reportid'];
+      $notes = $_POST['notes'];
+      $clientnotes = $_POST['clientnotes'];
+      $numstories = $_POST['numstories'];
+      $numbedrooms = $_POST['numbedrooms'];
+      $numbathrooms = $_POST['numbathrooms'];
+      $numrooms = $_POST['numrooms'];
+      $numbuildings = $_POST['numbuildings'];
+      $address1 = $_POST['address1'];
+      $address2 = $_POST['address2'];
+      $city = $_POST['city'];
+      $postcode = $_POST['postcode'];
+      $state = $_POST['state'];
+      $construction = $_POST['construction'];
+      $age = $_POST['age'];
+      $meetingonsite = $_POST['meetingonsite'];
+      $renoadvice = $_POST['renoadvice'];
+      $pestinspection = $_POST['pestinspection'];
+
+      $estateagentcompany = $_POST['estateagentcompany'];
+      $estateagentcontact = $_POST['estateagentcontact'];
+      $estateagentmobile = $_POST['estateagentmobile'];
+      $estateagentphone = $_POST['estateagentphone'];
+
+      $quotedescription = $_POST['quotedescription'];
+
+      $reportheader = $_POST['reportheader'];
+      $reportnotes = $_POST['reportnotes'];
+
+      $isuser = isset($_POST['isuser']) ? $_POST['isuser'] : false;
+
+      $userid = SharedGetUserIdFromUuid($uuid, $dblink);
+
+      function doInsertBooking($repid, $linkedrepid = null)
+      {
+        // error_log("doInsertBooking");
+        // error_log("reportid :$repid");
+        
+        global $dblink;
+        global $custfirstname, $custlastname, $custemail, $custmobile, $custphone, $custaddress1, $custaddress2, $custcity, $custpostcode, $custstate;
+        global $budget, $commission, $travel, $spotter, $cancellationfee,$notes, $clientnotes, $numstories, $numbedrooms, $numbathrooms, $numbuildings, $numrooms;
+        global $address1, $address2, $city, $postcode, $state, $construction, $age, $meetingonsite, $renoadvice, $pestinspection;
+        global $estateagentcompany, $estateagentcontact, $estateagentmobile, $estateagentphone, $userid, $hasbudget, $hascommission;
+        global $hastravel,$hascancellation,$hasspotter,$quotedescription,$reportheader,$reportnotes;
+        $bookingcode = SharedMakeUuid(8);
+        $vars1 = "";
+        $vars2 = "";
+        $vars3 = "";
+        $vars4 = "";
+        $vars5 = "";
+
+        $clause1 = "";
+        $clause2 = "";
+        $clause3 = "";
+        $clause4 = "";
+        $clause5 = "";
+
+        //If the report is Combined Report(id=3) - Timber Pest Report, don't need to store all this amount related info
+        //So if id != 3, then could insert with the amount details. 
+        if($repid != 3)
+        {
+           error_log("report id is not 3");
+          if ($hasbudget)
+          {
+            $budget = $_POST['budget'];
+            $vars1 = "budget,";
+            $clause1 = SharedNullOrNum($budget, $dblink) . "," ;
+            // error_log("clause1: $clause1");
+          }
+  
+          if ($hascommission)
+          {
+            $vars2 = "commission,";
+            $clause2 = SharedNullOrNum($commission, $dblink) . "," ;
+          }
+  
+          if ($hastravel)
+          {
+            $vars3 = "travel,";
+            $clause3 = SharedNullOrNum($travel, $dblink) . "," ;
+          }
+  
+          if ($hasspotter)
+          {
+            $vars4 = "spotter,";
+            $clause4 = SharedNullOrNum($spotter, $dblink) . "," ;
+          }
+
+          if($hascancellation)
+          {
+            $vars5 = "cancellationfee,";
+            $clause5 = SharedNullOrNum($cancellationfee, $dblink) . "," ;
+          }
+        }
+        else //If selects combined report, timber one.set the budget to 0.0001, so its status can be 'Not Paid'/ .  
+        {
+          error_log("report id is 3");
+          if($hasbudget)
+          {
+            $vars1 = "budget,";
+            $budget = 0.0001;
+            $clause1 = SharedNullOrNum($budget, $dblink) . "," ;
+            // error_log("clause1: $clause1");
+          }
+        }
+        
+          
+        
+
+        $dbinsert = "insert into bookings " .
+                    "(" .
+                    "bookings_id," .
+                    "code," .
+                    "custfirstname," .
+                    "custlastname," .
+                    "custemail," .
+                    "custmobile," .
+                    "custphone," .
+                    "custaddress1," .
+                    "custaddress2," .
+                    "custcity," .
+                    "custpostcode," .
+                    "custstate," .
+
+                    "itype," .
+                    $vars1 .
+                    $vars2 .
+                    $vars3 .
+                    $vars4 .
+                    $vars5 .
+                    "notes," .
+                    "clientnotes,".
+
+                    "numstories," .
+                    "numbedrooms," .
+                    "numbathrooms," .
+                    "numrooms," .
+                    "numoutbuildings," .
+                    "address1," .
+                    "address2," .
+                    "city," .
+                    "state," .
+                    "postcode," .
+                    "construction," .
+                    "age," .
+                    "meetingonsite," .
+                    "renoadvice," .
+                    "pestinspection," .
+
+                    "estateagentcompany," .
+                    "estateagentcontact," .
+                    "estateagentmobile," .
+                    "estateagentphone," .
+                    'quote_description,' .
+
+                    "userscreated_id," .
+                    "reportheader,".
+                    "reportnotes".
+                    ") " .
+                    "values " .
+                    "(" .
+                    SharedNullOrNum($linkedrepid, $dblink) . "," .
+                    SharedNullOrQuoted($bookingcode, 8, $dblink) . "," .
+                    SharedNullOrQuoted($custfirstname, 50, $dblink) . "," .
+                    SharedNullOrQuoted($custlastname, 50, $dblink) . "," .
+                    SharedNullOrQuoted($custemail, 100, $dblink) . "," .
+                    SharedNullOrQuoted($custmobile, 20, $dblink) . "," .
+                    SharedNullOrQuoted($custphone, 20, $dblink) . "," .
+                    SharedNullOrQuoted($custaddress1, 50, $dblink) . "," .
+                    SharedNullOrQuoted($custaddress2, 50, $dblink) . "," .
+                    SharedNullOrQuoted($custcity, 50, $dblink) . "," .
+                    SharedNullOrQuoted($custpostcode, 10, $dblink) . "," .
+                    SharedNullOrQuoted($custstate, 50, $dblink) . "," .
+
+                    SharedNullOrNum($repid, $dblink) . "," .
+                    $clause1 .
+                    $clause2 .
+                    $clause3 .
+                    $clause4 .
+                    $clause5 .
+                    SharedNullOrQuoted($notes, 1000, $dblink) . "," .
+                    SharedNullOrQuoted($clientnotes, 1000, $dblink) . "," .
+
+                    SharedNullOrNum($numstories, $dblink) . "," .
+                    SharedNullOrNum($numbedrooms, $dblink) . "," .
+                    SharedNullOrNum($numbathrooms, $dblink) . "," .
+                    SharedNullOrNum($numrooms, $dblink) . "," .
+                    SharedNullOrNum($numbuildings, $dblink) . "," .
+
+                    SharedNullOrQuoted($address1, 50, $dblink) . "," .
+                    SharedNullOrQuoted($address2, 50, $dblink) . "," .
+                    SharedNullOrQuoted($city, 50, $dblink) . "," .
+                    SharedNullOrQuoted($state, 50, $dblink) . "," .
+                    SharedNullOrQuoted($postcode, 10, $dblink) . "," .
+                    SharedNullOrQuoted($construction, 100, $dblink) . "," .
+                    SharedNullOrQuoted($age, 50, $dblink) . "," .
+                    SharedNullOrNum($meetingonsite, $dblink) . "," .
+                    SharedNullOrNum($renoadvice, $dblink) . "," .
+                    SharedNullOrNum($pestinspection, $dblink) . "," .
+
+                    SharedNullOrQuoted($estateagentcompany, 50, $dblink) . "," .
+                    SharedNullOrQuoted($estateagentcontact, 50, $dblink) . "," .
+                    SharedNullOrQuoted($estateagentmobile, 20, $dblink) . "," .
+                    SharedNullOrQuoted($estateagentphone, 20, $dblink) . "," .
+                    SharedNullOrQuoted($quotedescription, 1000, $dblink) . "," .
+                    SharedNullOrNum($userid, $dblink) .",".
+                    SharedNullOrQuoted($reportheader, 1000, $dblink) . "," .
+                    SharedNullOrQuoted($reportnotes, 1000, $dblink) . 
+                    ")";
+        error_log($dbinsert);
+        if ($dbresult = SharedQuery($dbinsert, $dblink))
+          return (SharedGetInsertId($dblink));
+        return null;
+      }
+
+      $bookingid = 0;
+      //Inform the client booking has been made, and record the activity to the audit_log table. 
+      if ($reportid == 24) 
+      {
+        // reportid = 24 --> User selects combined report. 
+        // Need to create Timber (first, reportid == 3), then property asset report(reportid == 24)
+        $html = file_get_contents('email_newbooking2.html');
+        $bookingid = doInsertBooking(3, null);
+        $bookingid2 = doInsertBooking(24, $bookingid);
+        error_log("the booking id is ". $bookingid);
+        $recordsql1 = "insert into audit_log ".
+                      "(bookings_id," .
+                      "event, ".
+                      "userscreated_id".
+                      ")".
+                      "values ".
+                      "(".
+                      $bookingid ."," .
+                      1 ."," .
+                      SharedNullOrNum($userid, $dblink) .
+                      ")";
+        error_log($recordsql1);
+        if($dbresult = SharedQuery($recordsql1, $dblink))
+        {
+          $recordsql2 = "insert into audit_log ".
+                        "(bookings_id," .
+                        "event, ".
+                        "userscreated_id".
+                        ")".
+                        "values ".
+                        "(".
+                        $bookingid2 ."," .
+                        1 ."," .
+                        SharedNullOrNum($userid, $dblink) .
+                        ")";
+          error_log($recordsql2);
+          if($dbresult = SharedQuery($recordsql2, $dblink))
+          {
+            $msg = "Successfully created new bookings [$bookingid and $bookingid2]";
+            $rc = 0;
+            if (($isuser == 1) && ($custemail != ""))
+            {
+              $html = str_replace("XXX_CUSTFIRSTNAME", $custfirstname . " " . $custlastname, $html);
+              $html = str_replace("XXX_BOOKINGCODE1", $bookingid, $html);
+              $html = str_replace("XXX_BOOKINGCODE2", $bookingid2, $html);
+
+              //SharedSendHtmlMail($gConfig['adminemail'], "Web Enquiry", $booking['custemail'], $custfirstname . ' ' . $custlastname, "Online Booking Request", $html);
+              SharedSendHtmlMail($gConfig['adminemail'], "Web Enquiry", $custemail, $custfirstname . ' ' . $custlastname, "Online Booking Request", $html);
+              //SharedSendHtmlMail($custemail, $custfirstname . ' ' . $custlastname, $gConfig['adminemail'], "Web Enquiry", "Online Booking Request", $body);
+            }
+          }
+        }
+      }
+      else
+      {
+        //Single Report
+        $html = file_get_contents('email_newbooking.html');
+        error_log($reportid);
+        $bookingid = doInsertBooking($reportid, null);
+        error_log($bookingid);
+        $recordsql = "insert into audit_log ".
+                     "(bookings_id," .
+                     "event, ".
+                     "userscreated_id".
+                     ")".
+                     "values ".
+                     "(".
+                     $bookingid ."," .
+                     1 ."," .
+                     SharedNullOrNum($userid, $dblink) .
+                     ")";
+        error_log($recordsql);
+        if($dbresult = SharedQuery($recordsql, $dblink))
+        {
+          $msg = "Successfully created new booking [$bookingid]";
+          $rc = 0;
+
+          if (($isuser == 1) && ([$custemail] != ""))
+          {
+            $html = str_replace("XXX_CUSTFIRSTNAME", $custfirstname . " " . $custlastname, $html);
+            $html = str_replace("XXX_BOOKINGCODE", $bookingid, $html);
+
+
+            SharedSendHtmlMail($gConfig['adminemail'], "Web Enquiry", $custemail, $custfirstname . ' ' . $custlastname, "Online Booking Request", $html);
+            //SharedSendHtmlMail($custemail, $custfirstname . ' ' . $custlastname, $gConfig['adminemail'], "Web Enquiry", "Online Booking Request", $body);
+          }
+        
+        }
+        else
+        {
+          //$msg = "Successfully created new booking [$bookingid], The isuser is [$isuser]";
+          $msg = "Could not recrod booking [$bookingid] to audit log";
+        }
+      }
+    }
+    else
+      $msg = "Missing report type...";
+  }
+
+  catch (Exception $e)
+  {
+    $msg = "Unable to create new booking...";
+  }
+
+  $response = array("rc" => $rc, "msg" => $msg, "bookingcode" => $bookingid);
+  $json = json_encode($response);
+  echo $json;
+?>
