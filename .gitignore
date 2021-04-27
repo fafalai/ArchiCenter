@@ -1,0 +1,15 @@
+/node_modules/
+.DS_Store
+/.brackets.json
+/photos/
+/images/
+/undefined
+/pdfreport/
+/ChromePhp.php
+.vscode/
+shared.php
+invoices_pdf/
+tmp/
+photos/
+/importing/architects.csv
+/importing/booking_data.csv
