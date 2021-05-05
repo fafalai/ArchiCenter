@@ -83,6 +83,12 @@
 
       $quotedescription = $_POST['quotedescription'];
 
+      $reportheader = $_POST['reportheader'];
+      $reportnotes = $_POST['reportnotes'];
+
+      error_log("the report header is $reportheader");
+
+
       $isuser = isset($_POST['isuser']) ? $_POST['isuser'] : false;
 
       $userid = SharedGetUserIdFromUuid($uuid, $dblink);
@@ -97,7 +103,7 @@
         global $budget, $commission, $travel, $spotter, $notes, $numstories, $numbedrooms, $numbathrooms, $numbuildings, $numrooms;
         global $address1, $address2, $city, $postcode, $state, $construction, $age, $meetingonsite, $renoadvice, $pestinspection;
         global $estateagentcompany, $estateagentcontact, $estateagentmobile, $estateagentphone, $userid, $hasbudget, $hascommission;
-        global $hastravel,$hasspotter,$quotedescription;
+        global $hastravel,$hasspotter,$quotedescription,$reportheader,$reportnotes;
         $bookingcode = SharedMakeUuid(8);
         $vars1 = "";
         $vars2 = "";
@@ -199,7 +205,9 @@
                     "estateagentphone," .
                     'quote_description,' .
 
-                    "userscreated_id" .
+                    "userscreated_id," .
+                    "reportheader,".
+                    "reportnotes".
                     ") " .
                     "values " .
                     "(" .
@@ -246,7 +254,9 @@
                     SharedNullOrQuoted($estateagentphone, 20, $dblink) . "," .
                     SharedNullOrQuoted($quotedescription, 1000, $dblink) . "," .
 
-                    SharedNullOrNum($userid, $dblink) .
+                    SharedNullOrNum($userid, $dblink) .",".
+                    SharedNullOrQuoted($reportheader, 1000, $dblink) . "," .
+                    SharedNullOrQuoted($reportnotes, 1000, $dblink) . 
                     ")";
         error_log($dbinsert);
         if ($dbresult = SharedQuery($dbinsert, $dblink))
