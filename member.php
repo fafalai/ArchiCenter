@@ -6246,7 +6246,7 @@
     </div>
   </div>
 
-  <div id="dlgBookingNew" class="easyui-dialog" title="New Booking" style="width: 800px; height: 640px;" data-options="resizable: false, modal: true, closable: false, closed: true">
+  <div id="dlgBookingNew" class="easyui-dialog" title="New Booking" style="width: 800px; height: 680px;" data-options="resizable: false, modal: true, closable: false, closed: true">
     <div class="easyui-panel" title="Booking Details" data-options="fit: true">
       <div id="newbookingtabs" class="easyui-tabs" data-options="fit: true, pill: true">
         <div title="Client Details" data-options="iconCls: 'icon-man'">
@@ -6344,15 +6344,15 @@
             ?>
             <tr>
               <td style="vertical-align: top;">Notes:</td>
-              <td><input id="fldNewBookingNotes" class="easyui-textbox" multiline="true" style="width: 600px; height: 150px"></td>
+              <td><input id="fldNewBookingNotes" class="easyui-textbox" multiline="true" style="width: 600px; height: 95px"></td>
             </tr>
             <tr style="margin-top:5px">
               <td style="vertical-align: top">Client Notes:</td>
-              <td><input id="fldNewBookingClientNotes" class="easyui-textbox" multiline="true" style="width: 600px; height: 150px"></td>
+              <td><input id="fldNewBookingClientNotes" class="easyui-textbox" multiline="true" style="width: 600px; height: 95px"></td>
             </tr>
             <tr>
               <td>Report Notes:</td>
-              <td><div id="fldNewBookingReportNotes" class="easyui-textbox" multiline="true" style="width: 600px; height: 150px"></div></td>
+              <td><div id="fldNewBookingReportNotes" class="easyui-textbox" multiline="true" style="width: 600px; height: 95px"></div></td>
             </tr>
           </table>
         </div>
