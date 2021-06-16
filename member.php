@@ -4300,8 +4300,6 @@
           'divBookingsG',
           function(row)
           {
-
-           
             var selectedCustFirstName = row.custfirstname;
             var selectedCustLastName = row.custlastname;
             var selectedCustEmail = row.custemail;
@@ -4312,25 +4310,14 @@
             var selectedCustCity = row.custcity;
             var selectedCustState = row.custstate;
             var selectedCustPostcode = row.custpostcode;
-            //console.log(selectedCustEmail);
+            var selectedReportHeader = row.reportheader;
+            var selectedReportNotes = row.reportnotes;
+            console.log("selectedReportNotes:" + selectedReportNotes);
+            console.log("selectedReportHeader: " + selectedReportHeader);
 
-           
             function doReset()
             {
-              // Client TAB
-              // $('#fldNewBookingCustState').combobox('clear');
-            
-              // $('#fldNewBookingCustFirstName').textbox('clear');
-              // $('#fldNewBookingCustLastName').textbox('clear');
-              // $('#fldNewBookingCustEmail').textbox('clear');
-              // $('#fldNewBookingCustEmail2').tagbox('clear');
-              // $('#fldNewBookingCustMobile').textbox('clear');
-              // $('#fldNewBookingCustPhone').textbox('clear');
-              // $('#fldNewBookingCustAddress1').textbox('clear');
-              // $('#fldNewBookingCustAddress2').textbox('clear');
-              // $('#fldNewBookingCustCity').textbox('clear');
-              // $('#fldNewBookingCustPostcode').textbox('clear');
-
+             
               //Populate the client details fields. 
               $('#fldNewBookingCustFirstName').textbox('setValue',selectedCustFirstName);
               $('#fldNewBookingCustLastName').textbox('setValue',selectedCustLastName);
@@ -4345,6 +4332,25 @@
               {
                 $('#fldNewBookingCustEmail2').tagbox('setValues',selectedCustEmail);
               }
+
+              //Populate the report tab fields
+              if(selectedReportHeader != null)
+              {
+                $('#fldNewBookingReportHeader').textbox('setValue',selectedReportHeader);
+              }
+              else
+              {
+                $('#fldNewBookingReportHeader').textbox('clear');
+              }
+              if(selectedReportNotes != null)
+              {
+                $('#fldNewBookingReportNotes').textbox('setValue',selectedReportNotes);
+              }
+              else
+              {
+                $('#fldNewBookingReportNotes').textbox('clear');
+              }
+
               // Report TAB
               $('#fldNewBookingReport').combobox('clear');
               $('#fldNewBookingReport').combobox('enable');
@@ -4516,7 +4522,7 @@
                       var custpostcode = $('#fldNewBookingCustPostcode').textbox('getValue');
                       var custstate = $('#fldNewBookingCustState').combobox('getValue');
 
-                      var reportid = $('#fldNewBookingReport').combobox('getValue');               
+                      var reportid = $('#fldNewBookingReport').combobox('getValue');   
                       <?php
                         if (SharedIsAdmin())
                         {
@@ -4531,7 +4537,9 @@
                       ?>
                       var notes = $('#fldNewBookingNotes').textbox('getValue');
                       var clientnotes = $('#fldNewBookingClientNotes').textbox('getValue');
-
+                      var reportheader = $('#fldNewBookingReportHeader').textbox('getText');
+                      var reportnotes = $('#fldNewBookingReportNotes').textbox('getText');
+                
                       var numstories = $('#fldNewBookingNumStories').combobox('getValue');
                       var numbedrooms = $('#fldNewBookingNumBedRooms').combobox('getValue');
                       var numbathrooms = $('#fldNewBookingNumBathRooms').combobox('getValue');
@@ -4558,6 +4566,10 @@
                       var quotedescription = $('#fldNewBookingQuoteDes').textbox('getValue');
 
                       //console.log(custemail);
+                      if(reportid == "" || reportid == null)
+                      {
+                        reportid = 0
+                      }
 
                       if (!_.isBlank(reportid))
                       {
@@ -4598,6 +4610,8 @@
                                   ?>
                                   notes: notes,
                                   clientnotes:clientnotes,
+                                  reportheader:reportheader,
+                                  reportnotes:reportnotes,
 
                                   numstories: numstories,
                                   numbedrooms: numbedrooms,
