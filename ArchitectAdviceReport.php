@@ -79,7 +79,6 @@
 <div id="AdviceCustomerDetails" class="container">
 <!--Report Header and Notes-->
 <input class="form-control" type="text" title="name" id="reportheader" style="display:none" value="<?php echo doNiceArrayElemAsString('reportheader') ?>">
-<!-- <input class="form-control" type="text" title="name" id="reportnotes"  style="display:none" value="<?php echo doNiceArrayElemAsString('reportnotes') ?>"> -->
 <input class="form-control" type="text" title="name" id="reportnotes"  style="display:none" value="<?php echo $booking['reportnotes']; ?>">
 
 
